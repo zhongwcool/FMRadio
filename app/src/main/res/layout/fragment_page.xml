@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <com.gst.fmradio.view.CircleImageView
+        android:id="@+id/avatar"
+        android:layout_width="140dip"
+        android:layout_height="140dip"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="85dp"
+        android:layout_marginTop="75dp"
+        android:src="@drawable/avatar_one" />
+
+    <ImageView
+        android:id="@+id/disc"
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/fm_play_disc" />
+
+</FrameLayout>

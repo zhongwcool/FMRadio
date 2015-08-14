@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">FM Radio</string>
+
+    <string name="FM">FM</string>
+    <string name="num">87.0</string>
+    <string name="mfz">MHz</string>
+    
+    <string name="action_settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

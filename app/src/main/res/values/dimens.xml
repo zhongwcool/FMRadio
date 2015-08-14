@@ -1,0 +1,22 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="symbol_layout_width">100dp</dimen>
+    <dimen name="symbol_paddingTop">60dp</dimen>
+    <dimen name="symbol_textSize">25sp</dimen>
+    <dimen name="FMChannelnum_layout_width">300dp</dimen>
+    <dimen name="FMChannelnum_layout_height">100dp</dimen>
+    <dimen name="FMChannelnum_layout_marginLeft">4dp</dimen>
+    <dimen name="FMChannelnum_layout_marginRight">4dp</dimen>
+    <dimen name="FMChannelnum_textSize">60sp</dimen>
+    <dimen name="FMCollectStatus_vertical_layout_width">80dp</dimen>
+    <dimen name="FMCollectStatus_layout_marginLeft">3dp</dimen>
+    <dimen name="FMCollectStatus_ImageView_layout_width">40dp</dimen>
+    <dimen name="FMCollectStatus_ImageView_layout_height">40dp</dimen>
+    <dimen name="FMCollectStatus_ImageView_padding">6dp</dimen>
+    <dimen name="FMCollectStatus_TextView_layout_width">60dp</dimen>
+    <dimen name="FMCollectStatus_TextView_layout_height">30dp</dimen>
+    <dimen name="FMCollectStatus_TextView_textSize">25sp</dimen>
+
+</resources>

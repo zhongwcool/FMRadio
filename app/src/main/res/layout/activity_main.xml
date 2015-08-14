@@ -1,0 +1,179 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_fm_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/background_ground_floor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/layout_media_play_view"
+        android:layout_width="300dp"
+        android:layout_height="fill_parent" />
+
+    <ImageView
+        android:id="@+id/discbg"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="53dp"
+        android:layout_marginTop="45dp"
+        android:background="@drawable/fm_disc_bg" />
+
+
+    <ImageView
+        android:id="@+id/needle"
+        android:layout_width="140dp"
+        android:layout_height="65dp"
+        android:layout_marginLeft="100dp"
+        android:src="@drawable/fm" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="300dp"
+        android:orientation="vertical"
+        android:background="@color/deep_grey_400"
+        android:layout_marginBottom="125dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="15dp">
+
+        <TextView
+            android:id="@+id/symbol"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:text="@string/FM"
+            android:textStyle="bold"
+            android:textSize="@dimen/symbol_textSize"
+            android:textColor="@color/grey_1000w"
+            android:gravity="bottom"
+            android:layout_gravity="left"
+            android:paddingLeft="30dp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:orientation="horizontal"
+            android:layout_weight="2"
+            android:gravity="bottom" >
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="bottom"
+                android:layout_marginBottom="5dp">
+            <TextView
+                android:id="@+id/FMChannelnum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="25dp"
+                android:textSize="@dimen/FMChannelnum_textSize"
+                android:text="@string/num"
+                android:textColor="@color/grey_1000w"
+                android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:id="@+id/collect"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/FMCollectStatus_ImageView_padding"
+                    android:src="@drawable/ic_action_not_start"/>
+
+                <TextView
+                    android:id="@+id/textview"
+                    android:layout_width="@dimen/FMCollectStatus_TextView_layout_width"
+                    android:layout_height="@dimen/FMCollectStatus_TextView_layout_height"
+                    android:text="MHz"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/FMCollectStatus_TextView_textSize"
+                    android:textColor="@color/grey_1000w"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="60dp"
+        android:src="@drawable/ic_action_progress"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="0"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/deep_grey_400"
+            android:gravity="center_horizontal|center"
+            android:padding="8dp"
+            android:src="@drawable/button_original_press" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/deep_grey_400"
+            android:padding="8dp"
+            android:src="@drawable/button_previous_press" />
+
+        <ImageButton
+            android:id="@+id/action_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/deep_grey_400"
+            android:padding="8dp"
+            android:src="@drawable/ic_action_search"/>
+
+        <ImageButton
+            android:id="@+id/imageButton3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/deep_grey_400"
+            android:padding="8dp"
+            android:src="@drawable/button_next_press" />
+
+        <ImageButton
+            android:id="@+id/imageButton4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/deep_grey_400"
+            android:padding="8dp"
+            android:src="@drawable/button_final_press" />
+    </LinearLayout>
+
+
+</FrameLayout>

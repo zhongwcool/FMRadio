@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<needle_end xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="20"
+    android:toDegrees="0"
+    android:interpolator="@android:anim/linear_interpolator"
+    android:pivotX="25%"
+    android:pivotY="0"
+    android:fillEnabled="true"
+    android:fillAfter="true">
+
+</needle_end>

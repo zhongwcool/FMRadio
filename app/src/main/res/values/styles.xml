@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <!--<item name="android:background">@color/blue_grey_900</item>-->
+        <!--<item name="android:textColor">#fafafa</item>-->
+        <!--<item name="android:textStyle">bold</item>-->
+        <!--<item name="android:windowBackground">@color/blue_grey_900</item>-->
+        <!--<item name="android:itemBackground">@color/blue_grey_900</item>-->
+        <!--<item name="colorPrimaryDark">@color/orange_500</item>-->
+        <!--<item name="colorAccent">@color/lime_A700</item>-->
+        <!--<item name="colorPrimary">@color/smart_grey_400</item>-->
+
+    </style>
+
+
+</resources>

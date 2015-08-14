@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/linear_interpolator">
+    <!--定义一个位移的变化-->
+    <translate
+        android:fromXDelta="-860"
+        android:toXDelta="1000"
+        android:fromYDelta="0"
+        android:toYDelta="0"
+        android:duration="100"/>
+    <alpha
+        android:fromAlpha="0.05"
+        android:toAlpha="1"
+        android:duration="100" />
+</set>
