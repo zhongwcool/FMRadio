@@ -12,10 +12,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -34,10 +37,20 @@ import com.gst.fmradio.model.Channel;
 import com.gst.fmradio.service.FMService;
 import com.gst.fmradio.utils.Blur;
 import com.gst.fmradio.utils.DBHelper;
+import com.gst.fmradio.utils.FixedSpeedScroller;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+    //请求码
+    final static int REQUSET = 1;
+    //边界值
+    private final static int MINCHANNELNUM = 875;
+    private final static int MAXCHANNELNUM = 1080;
     ProgressDialog m_pDialog;
+    List<Channel> list = new ArrayList<Channel>();
+    int index = 0;
+    int collectStatus, channelnum;
+    int backgroundcurrent = 0;
     private DBHelper dbHelper = new DBHelper(this);
     //定义两个文本框
     private TextView symbol, mChannelnum;
@@ -47,28 +60,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     //
     private int fmId, fmCollectStatus, fmChannelnum;
     private String fmName;
-    List<Channel> list = new ArrayList<Channel>();
-    int index = 0;
-
-    int collectStatus, channelnum;
     private int currentFq = 0;
     private int needleStatus = 0;
-    //边界值
-    private final static int MINCHANNELNUM = 875;
-    private final static int MAXCHANNELNUM = 1080;
-    //请求码
-    final static int REQUSET = 1;
-
     private FrameLayout mFrameLayout;
     private ViewPager mPlayView;
     private PageFragment mFragmentPage;
     private FragmentPagerAdapter mAdapter;
     private Animation animatonCollectStatus;
-
     //唱针
     private ImageView mNeedle;
-
-    int backgroundcurrent = 0;
+    private FixedSpeedScroller mScroller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,60 +118,44 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.imageButton:
                 //按钮设置点击监听事件：前一个有效的FM
                 op = Contans.MEDIA_ORIGINAL;
-                needleStatus = 1;
-                setAnimatNeedle();
-                setOriginal();
-                backgroundcurrent = backgroundcurrent + 2;
-                if (backgroundcurrent > 4) {
-                    backgroundcurrent = 0;
+                backgroundcurrent = backgroundcurrent - 1;
+                if (backgroundcurrent < 0) {
+                    backgroundcurrent = 4;
                 }
-                setBackgroudBitmap(backgroundcurrent);
-                needleStatus = 0;
-                setAnimatNeedle();
+                mPlayView.setCurrentItem(backgroundcurrent);
+                setOriginal();
                 break;
             case R.id.imageButton2:
                 //按钮设置点击监听事件：FM减少0.1MHz
                 op = Contans.MEDIA_PREVIOUS;
                 progress.clearAnimation();
-                needleStatus = 1;
-                setAnimatNeedle();
-                setPrevious();
-                backgroundcurrent = backgroundcurrent + 1;
-                if (backgroundcurrent > 4) {
-                    backgroundcurrent = 0;
+                backgroundcurrent = backgroundcurrent - 1;
+                if (backgroundcurrent < 0) {
+                    backgroundcurrent = 4;
                 }
-                setBackgroudBitmap(backgroundcurrent);
-                needleStatus = 0;
-                setAnimatNeedle();
+                mPlayView.setCurrentItem(backgroundcurrent);
+                setPrevious();
                 break;
             case R.id.imageButton3:
                 //按钮设置点击监听事件：FM增加0.1MHz
                 op = Contans.MEDIA_NEXT;
                 progress.clearAnimation();
-                needleStatus = 1;
-                setAnimatNeedle();
-                backgroundcurrent = backgroundcurrent - 1;
-                if (backgroundcurrent < 0) {
-                    backgroundcurrent = 4;
+                backgroundcurrent = backgroundcurrent + 1;
+                if (backgroundcurrent > 4) {
+                    backgroundcurrent = 0;
                 }
-                setBackgroudBitmap(backgroundcurrent);
+                mPlayView.setCurrentItem(backgroundcurrent);
                 setNext();
-                needleStatus = 0;
-                setAnimatNeedle();
                 break;
             case R.id.imageButton4:
                 //按钮设置点击监听事件：后一个有效的FM
                 op = Contans.MEDIA_LATTER;
-                needleStatus = 1;
-                setAnimatNeedle();
-                setLater();
-                backgroundcurrent = backgroundcurrent - 2;
-                if (backgroundcurrent < 0) {
-                    backgroundcurrent = 4;
+                backgroundcurrent = backgroundcurrent + 1;
+                if (backgroundcurrent > 4) {
+                    backgroundcurrent = 0;
                 }
-                setBackgroudBitmap(backgroundcurrent);
-               needleStatus = 0;
-                setAnimatNeedle();
+                mPlayView.setCurrentItem(backgroundcurrent);
+                setLater();
                 break;
             case R.id.collect:
                 setStatus();
@@ -493,55 +478,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
-    private class MyPageChangeListener implements ViewPager.OnPageChangeListener {
-        public void onPageScrollStateChanged(int arg0) {
-            PageFragment mPageFragment = new PageFragment();
-            if (arg0 == 0) {
-                needleStatus = 0;
-                setAnimatNeedle();
-            } else if (arg0 == 1) {
-                needleStatus = 1;
-                setAnimatNeedle();
-                Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[mPlayView.getCurrentItem()]));
-                Bitmap bm = Blur.apply(MainActivity.this, b);
-                Drawable drawable = new BitmapDrawable(bm);
-                mFrameLayout.setBackgroundDrawable(drawable);
-            } else if (arg0 == 2) {
-
-            }
-        }
-
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            int op = Contans.MEDIA_BASE;
-            Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[position]));
-            Bitmap bm = Blur.apply(MainActivity.this, b);
-            ImageView imageView = (ImageView) findViewById(R.id.background_ground_floor);
-            Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.alpha);
-            imageView.startAnimation(animation);
-            Drawable drawable = new BitmapDrawable(bm);
-            imageView.setBackground(drawable);
-            if (position > backgroundcurrent) {
-                setLater();
-                op = Contans.MEDIA_LATTER;
-            } else if (position < backgroundcurrent) {
-                setOriginal();
-                op = Contans.MEDIA_ORIGINAL;
-            }
-            backgroundcurrent = position;
-            Intent intent = new Intent("com.gst.fmradio.service.FMService");
-            Bundle bundle = new Bundle();
-            bundle.putInt("op", op);
-            intent.putExtras(bundle);
-            intent.setClass(MainActivity.this, FMService.class);
-            startService(intent);
-
-        }
-    }
-
     //指针动画
     public void setAnimatNeedle() {
         Animation anim;
@@ -555,7 +491,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         anim.setDuration(650);
         mNeedle.startAnimation(anim);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -674,7 +609,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
-
     public void leaveUpdate() {
         Cursor c = dbHelper.getReadableDatabase().query(
                 "channels",
@@ -712,10 +646,66 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return false;
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private class MyPageChangeListener implements ViewPager.OnPageChangeListener {
+        public void onPageScrollStateChanged(int arg0) {
+            PageFragment mPageFragment = new PageFragment();
+            if (arg0 == 0) {
+                needleStatus = 0;
+                setAnimatNeedle();
+            } else if (arg0 == 1) {
+                needleStatus = 1;
+                setAnimatNeedle();
+                Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[mPlayView.getCurrentItem()]));
+                Bitmap bm = Blur.apply(MainActivity.this, b);
+                Drawable drawable = new BitmapDrawable(bm);
+                mFrameLayout.setBackgroundDrawable(drawable);
+                try {
+                    Field mField = ViewPager.class.getDeclaredField("mScroller");
+                    mField.setAccessible(true);
+                    mScroller = new FixedSpeedScroller(mPlayView.getContext(), new AccelerateInterpolator());
+                    mField.set(mPlayView, mScroller);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (arg0 == 2) {
+
+            }
+        }
+
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            int op = Contans.MEDIA_BASE;
+            Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[position]));
+            Bitmap bm = Blur.apply(MainActivity.this, b);
+            ImageView imageView = (ImageView) findViewById(R.id.background_ground_floor);
+            Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.alpha);
+            imageView.startAnimation(animation);
+            Drawable drawable = new BitmapDrawable(bm);
+            imageView.setBackground(drawable);
+            if (position > backgroundcurrent) {
+                setLater();
+                op = Contans.MEDIA_LATTER;
+            } else if (position < backgroundcurrent) {
+                setOriginal();
+                op = Contans.MEDIA_ORIGINAL;
+            }
+            backgroundcurrent = position;
+            Intent intent = new Intent("com.gst.fmradio.service.FMService");
+            Bundle bundle = new Bundle();
+            bundle.putInt("op", op);
+            intent.putExtras(bundle);
+            intent.setClass(MainActivity.this, FMService.class);
+            startService(intent);
+
+        }
     }
 
 }
