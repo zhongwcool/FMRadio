@@ -17,12 +17,9 @@ import java.util.ArrayList;
  * Created by yu on 2015/7/22.
  */
 
-public class MyAdapter extends FragmentPagerAdapter
-{
+public class MyAdapter extends FragmentPagerAdapter {
+    public static final int[] TITLES = new int[]{R.drawable.avatar_one, R.drawable.avatar_two, R.drawable.avatar_three, R.drawable.avatar_four, R.drawable.avatar_five};
     private FragmentManager fm;
-
-
-    public static final int[] TITLES = new int[] {R.drawable.avatar_one,R.drawable.avatar_two,R.drawable.avatar_three,R.drawable.avatar_four,R.drawable.avatar_five};
 
 
     public MyAdapter(FragmentManager fm) {
@@ -40,9 +37,9 @@ public class MyAdapter extends FragmentPagerAdapter
 
     @Override
     public Fragment getItem(int arg0) {
-        PageFragment fragment = new PageFragment( );
+        PageFragment fragment = new PageFragment();
         fragment.newInstance(arg0);
-        Log.e("arg0","arg0:"+arg0);
+        Log.e("arg0", "arg0:" + arg0);
         return fragment;
     }
 
@@ -51,9 +48,5 @@ public class MyAdapter extends FragmentPagerAdapter
 
         return TITLES.length;
     }
-
-
-
-
 
 }
