@@ -78,7 +78,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         findId();
         list = queryValue();
         initView();
-
+        try {
+            Field mField = ViewPager.class.getDeclaredField("mScroller");
+            mField.setAccessible(true);
+            mScroller = new FixedSpeedScroller(mPlayView.getContext(), new AccelerateInterpolator());
+            mField.set(mPlayView, mScroller);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void findId() {
@@ -198,7 +205,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mPlayView.setAdapter(mAdapter);
         mPlayView.setOnPageChangeListener(new MyPageChangeListener());
-
+        //设置ViewPager的默认项, 设置为长度的100倍，这样子开始就能往左滑动
+        //mPlayView.setCurrentItem(backgroundcurrent);
     }
 
     //初始化界面
@@ -465,18 +473,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    //背景切换动画
-    public void setBackgroudBitmap(int backgroundcurrent) {
-
-        Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[backgroundcurrent]));
-        Bitmap bm = Blur.apply(MainActivity.this, b);
-        ImageView imageView = (ImageView) findViewById(R.id.background_ground_floor);
-        Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.alpha);
-        imageView.startAnimation(animation);
-        Drawable drawable = new BitmapDrawable(bm);
-        imageView.setBackground(drawable);
-
-    }
 
     //指针动画
     public void setAnimatNeedle() {
@@ -652,28 +648,32 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private class MyPageChangeListener implements ViewPager.OnPageChangeListener {
+        boolean isScrolled = false;
+
         public void onPageScrollStateChanged(int arg0) {
             PageFragment mPageFragment = new PageFragment();
             if (arg0 == 0) {
                 needleStatus = 0;
                 setAnimatNeedle();
+                if (mPlayView.getCurrentItem() == mPlayView.getAdapter()
+                        .getCount() - 1 && !isScrolled) {
+                    mPlayView.setCurrentItem(0);
+                }
+                // 当前为第一张，此时从左向右滑，则切换到最后一张
+                else if (mPlayView.getCurrentItem() == 0 && !isScrolled) {
+                    mPlayView.setCurrentItem(mPlayView.getAdapter()
+                            .getCount() - 1);
+                }
             } else if (arg0 == 1) {
+                isScrolled = false;
                 needleStatus = 1;
                 setAnimatNeedle();
                 Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[mPlayView.getCurrentItem()]));
                 Bitmap bm = Blur.apply(MainActivity.this, b);
                 Drawable drawable = new BitmapDrawable(bm);
                 mFrameLayout.setBackgroundDrawable(drawable);
-                try {
-                    Field mField = ViewPager.class.getDeclaredField("mScroller");
-                    mField.setAccessible(true);
-                    mScroller = new FixedSpeedScroller(mPlayView.getContext(), new AccelerateInterpolator());
-                    mField.set(mPlayView, mScroller);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             } else if (arg0 == 2) {
-
+                isScrolled = true;
             }
         }
 
