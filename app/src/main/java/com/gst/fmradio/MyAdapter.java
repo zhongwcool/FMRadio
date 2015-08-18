@@ -19,12 +19,13 @@ import java.util.ArrayList;
 
 public class MyAdapter extends FragmentPagerAdapter {
     public static final int[] TITLES = new int[]{R.drawable.avatar_one, R.drawable.avatar_two, R.drawable.avatar_three, R.drawable.avatar_four, R.drawable.avatar_five};
+    int mCount;
     private FragmentManager fm;
-
 
     public MyAdapter(FragmentManager fm) {
         super(fm);
         this.fm = fm;
+        mCount = TITLES.length;
 
     }
 
@@ -37,6 +38,15 @@ public class MyAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int arg0) {
+        if (arg0 >= TITLES.length) {
+            int newPosition = arg0 % TITLES.length;
+            arg0 = newPosition;
+            mCount++;
+        }
+        if (arg0 < 0) {
+            arg0 = -arg0;
+            mCount--;
+        }
         PageFragment fragment = new PageFragment();
         fragment.newInstance(arg0);
         Log.e("arg0", "arg0:" + arg0);
@@ -46,7 +56,8 @@ public class MyAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
 
-        return TITLES.length;
+        return Integer.MAX_VALUE;
     }
+
 
 }

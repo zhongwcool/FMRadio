@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,15 +25,14 @@ import com.gst.fmradio.utils.DBHelper;
 /**
  * Created by yyshang on 5/21/15.
  */
-public class ListActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
+public class ListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    DBHelper dbHelper;
+    List<Channel> channelList = new ArrayList<Channel>();
     private int listPosition = 0;   //标识列表位置
     private ListView listView;
     private DbAdapter adapter;
-    private int id,channelnum,collectStatus;
-    private String  name;
-
-    DBHelper dbHelper;
-    List<Channel> channelList = new ArrayList<Channel>();
+    private int id, channelnum, collectStatus;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +64,7 @@ public class ListActivity extends ActionBarActivity implements AdapterView.OnIte
         );
         //拿到每一行的id ，name,channelunm,collectStatus的值
         while (c.moveToNext()) {
-             id = c.getInt(c.getColumnIndex("id"));
+            id = c.getInt(c.getColumnIndex("id"));
             name = c.getString(c.getColumnIndex("name"));
             channelnum = c.getInt(c.getColumnIndex("channelnum"));
             collectStatus = c.getInt(c.getColumnIndex("collectStatus"));
@@ -84,6 +83,32 @@ public class ListActivity extends ActionBarActivity implements AdapterView.OnIte
 
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //获取单击是item的位置
+        Channel c = channelList.get(position);
+        /*给上一个Activity返回结果*/
+        Intent intent = new Intent(this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("channelnum", c.getChannelnum());
+        bundle.putInt("collectStatus", c.getCol());
+        intent.putExtras(bundle);
+        Log.e("return    :", "channelnum: " + c.getChannelnum() + " /collectStatus: " + c.getCol());
+        setResult(RESULT_OK, intent);
+        ListActivity.this.finish();
+
+        dbHelper.close();
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent();
+            Log.e("return2    :", "channelnum: " + "/collectStatus: ");
+            setResult(RESULT_CANCELED, intent);
+            this.finish();
+        }
+        return true;
+    }
 
     public class DbAdapter extends BaseAdapter {
         private List<Channel> list;
@@ -140,7 +165,7 @@ public class ListActivity extends ActionBarActivity implements AdapterView.OnIte
             }
 
             holder.name.setText(c.getName());
-            holder.channelnum.setText(String.valueOf(Float.valueOf(c.getChannelnum()/10.0f)));
+            holder.channelnum.setText(String.valueOf(Float.valueOf(c.getChannelnum() / 10.0f)));
             if (3 == c.getCol()) {
                 holder.collectStatus.setImageResource(R.drawable.ic_action_not_start);
             } else {
@@ -158,33 +183,6 @@ public class ListActivity extends ActionBarActivity implements AdapterView.OnIte
         }
 
 
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //获取单击是item的位置
-        Channel c = channelList.get(position);
-        /*给上一个Activity返回结果*/
-        Intent intent = new Intent(this,MainActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("channelnum",c.getChannelnum());
-        bundle.putInt("collectStatus",c.getCol());
-        intent.putExtras(bundle);
-        Log.e("return    :","channelnum: "+c.getChannelnum()+" /collectStatus: "+c.getCol());
-        setResult(RESULT_OK, intent);
-        ListActivity.this.finish();
-
-        dbHelper.close();
-    }
-
-    public boolean onKeyDown(int keyCode,KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            Intent intent = new Intent();
-            Log.e("return2    :","channelnum: "+"/collectStatus: ");
-            setResult(RESULT_CANCELED,intent);
-            this.finish();
-        }
-        return true;
     }
 }
 
