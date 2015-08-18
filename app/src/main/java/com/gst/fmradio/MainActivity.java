@@ -11,8 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,11 +26,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import com.gst.fmradio.bean.Contans;
 import com.gst.fmradio.model.Channel;
 import com.gst.fmradio.service.FMService;
@@ -39,8 +33,13 @@ import com.gst.fmradio.utils.Blur;
 import com.gst.fmradio.utils.DBHelper;
 import com.gst.fmradio.utils.FixedSpeedScroller;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //请求码
     final static int REQUSET = 1;
     //边界值
@@ -112,7 +111,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         search.setOnClickListener(this);
 
     }
-
 
     @Override
     public void onClick(View v) {
