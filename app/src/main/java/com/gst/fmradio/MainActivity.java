@@ -2,8 +2,10 @@ package com.gst.fmradio;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     List<Channel> list = new ArrayList<Channel>();
     int index = 0;
     int collectStatus, channelnum;
-    int backgroundcurrent = 0;
+    int backgroundcurrent = 5 * 300;
     private DBHelper dbHelper = new DBHelper(this);
     //定义两个文本框
     private TextView symbol, mChannelnum;
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //唱针
     private ImageView mNeedle;
     private FixedSpeedScroller mScroller;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         int op = Contans.MEDIA_BASE;
+        int direction = 0;
         animatonCollectStatus = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_collectstatus);
         Intent intent = new Intent("com.gst.fmradio.service.FMService");
         intent.setClass(this, FMService.class);
@@ -123,28 +128,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.imageButton:
                 //按钮设置点击监听事件：前一个有效的FM
                 op = Contans.MEDIA_ORIGINAL;
-                mPlayView.arrowScroll(1);
-                setOriginal();
+                mPlayView.arrowScroll(Contans.TURNLEFT);
                 break;
             case R.id.imageButton2:
                 //按钮设置点击监听事件：FM减少0.1MHz
                 op = Contans.MEDIA_PREVIOUS;
                 progress.clearAnimation();
-                mPlayView.arrowScroll(1);
-                setPrevious();
+
+
                 break;
             case R.id.imageButton3:
                 //按钮设置点击监听事件：FM增加0.1MHz
                 op = Contans.MEDIA_NEXT;
-                progress.clearAnimation();
-                mPlayView.arrowScroll(2);
-                setNext();
+                direction = 1;
+   
                 break;
             case R.id.imageButton4:
                 //按钮设置点击监听事件：后一个有效的FM
                 op = Contans.MEDIA_LATTER;
-                mPlayView.arrowScroll(2);
-                setLater();
+                direction = 1;
+                mPlayView.arrowScroll(Contans.TURNRIGHT);
+
                 break;
             case R.id.collect:
                 setStatus();
@@ -161,6 +165,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtras(bundle);
         intent.setClass(this, FMService.class);
         startService(intent);
+        if (direction == 0) {
+            int i = mPlayView.getCurrentItem() % 5 + 1;
+            if (i > MyAdapter.TITLES.length - 1) {
+                i = 0;
+            }
+            setBackground(i);
+        } else {
+            int i = mPlayView.getCurrentItem() % 5 - 1;
+            if (i < 0) {
+                i = MyAdapter.TITLES.length - 1;
+            }
+            setBackground(i);
+        }
+
+
     }
 
 
@@ -176,20 +195,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtras(bundle);
         startService(intent);
         list = queryValue();
+        sp = getSharedPreferences("config", Context.MODE_WORLD_READABLE
+                | Context.MODE_WORLD_WRITEABLE);
+        backgroundcurrent = sp.getInt("backgroundcurrent", backgroundcurrent);
         setAnimatNeedle();
-
-        Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[backgroundcurrent]));
-        if (b == null)
-            return;
-        Bitmap bm = Blur.apply(this, b);
-        Drawable drawable = new BitmapDrawable(bm);
-        mFrameLayout.setBackgroundDrawable(drawable);
+        setBackground(backgroundcurrent % 5);
+    
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mPlayView.setAdapter(mAdapter);
         mPlayView.setOnPageChangeListener(new MyPageChangeListener());
         //设置ViewPager的默认项, 设置为长度的100倍，这样子开始就能往左滑动
-        //mPlayView.setCurrentItem(backgroundcurrent);
-        mPlayView.setCurrentItem(5 * 300);
+        mPlayView.setCurrentItem(backgroundcurrent);
     }
 
     //初始化界面
@@ -256,8 +272,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             list.add(chValue);
 
         }
-
+        c.close();
         return list;
+
 
     }
 
@@ -458,6 +475,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //背景设置
+    public void setBackground(int backgroundcurrent) {
+        Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[backgroundcurrent]));
+        if (b == null)
+            return;
+        Bitmap bm = Blur.apply(this, b);
+        Drawable drawable = new BitmapDrawable(bm);
+        mFrameLayout.setBackgroundDrawable(drawable);
+    }
 
     //指针动画
     public void setAnimatNeedle() {
@@ -633,20 +659,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private class MyPageChangeListener implements ViewPager.OnPageChangeListener {
         public void onPageScrollStateChanged(int arg0) {
-            PageFragment mPageFragment = new PageFragment();
+
             if (arg0 == 0) {
                 needleStatus = 0;
                 setAnimatNeedle();
             } else if (arg0 == 1) {
                 needleStatus = 1;
                 setAnimatNeedle();
-                Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[mPlayView.getCurrentItem() % 5]));
-                Bitmap bm = Blur.apply(MainActivity.this, b);
-                Drawable drawable = new BitmapDrawable(bm);
-                mFrameLayout.setBackgroundDrawable(drawable);
-            } else if (arg0 == 2) {
-                needleStatus = 1;
-                setAnimatNeedle();
+                setBackground(mPlayView.getCurrentItem() % 5);
             }
         }
 
@@ -656,16 +676,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onPageSelected(int position) {
             int op = Contans.MEDIA_BASE;
-            if (position > 4) {
-                position = position % 5;
-            }
-            Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[position]));
-            Bitmap bm = Blur.apply(MainActivity.this, b);
-            ImageView imageView = (ImageView) findViewById(R.id.background_ground_floor);
-            Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.alpha);
-            imageView.startAnimation(animation);
-            Drawable drawable = new BitmapDrawable(bm);
-            imageView.setBackground(drawable);
             if (position > backgroundcurrent) {
                 setLater();
                 op = Contans.MEDIA_LATTER;
@@ -674,6 +684,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 op = Contans.MEDIA_ORIGINAL;
             }
             backgroundcurrent = position;
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putInt("backgroundcurrent", backgroundcurrent);
+            editor.commit();
+            Log.e("onPageSelected", "backgroundcurrent = " + backgroundcurrent);
+
+            if (position > 4) {
+                position = position % 5;
+            }
+            int positionIndex = position;
+            Bitmap b = Blur.drawableToBitmap(getResources().getDrawable(MyAdapter.TITLES[positionIndex]));
+            Bitmap bm = Blur.apply(MainActivity.this, b);
+            ImageView imageView = (ImageView) findViewById(R.id.background_ground_floor);
+            Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.alpha);
+            imageView.startAnimation(animation);
+            Drawable drawable = new BitmapDrawable(bm);
+            imageView.setBackground(drawable);
             Intent intent = new Intent("com.gst.fmradio.service.FMService");
             Bundle bundle = new Bundle();
             bundle.putInt("op", op);

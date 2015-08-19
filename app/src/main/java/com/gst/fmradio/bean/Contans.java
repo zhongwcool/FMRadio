@@ -9,4 +9,6 @@ public class Contans {
     public final static int MEDIA_PREVIOUS = MEDIA_BASE+2;
     public final static int MEDIA_NEXT = MEDIA_BASE+3;
     public final static int MEDIA_LATTER = MEDIA_BASE+4;
+    public final static int TURNLEFT = 1;
+    public final static int TURNRIGHT = 2;
 }

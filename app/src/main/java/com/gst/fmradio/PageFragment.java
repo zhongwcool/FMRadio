@@ -24,15 +24,17 @@ public class PageFragment extends android.support.v4.app.Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    public static CircleImageView mAvatar;
+    ObjectAnimator animator;
     // TODO: Rename and change types of parameters
     private int mParam1;
     private String mParam2;
 
-    public static CircleImageView mAvatar;
-    ObjectAnimator animator;
-
     //private OnFragmentInteractionListener mListener;
+
+    public PageFragment() {
+        // Required empty public constructor
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -50,10 +52,6 @@ public class PageFragment extends android.support.v4.app.Fragment {
         args.putInt(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public PageFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -125,5 +123,17 @@ public class PageFragment extends android.support.v4.app.Fragment {
 //        // TODO: Update argument type and name
 //        public void onFragmentInteraction(Uri uri);
 //    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ARG_PARAM2, mParam1);
+    }
 
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            mAvatar.setImageResource(MyAdapter.TITLES[savedInstanceState.getInt(ARG_PARAM2)]);
+        }
+    }
 }
