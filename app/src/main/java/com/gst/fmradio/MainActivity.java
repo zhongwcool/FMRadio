@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gst.fmradio.bean.Contans;
+import com.gst.fmradio.bean.Contants;
 import com.gst.fmradio.model.Channel;
 import com.gst.fmradio.service.FMService;
 import com.gst.fmradio.utils.Blur;
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        int op = Contans.MEDIA_BASE;
+        int op = Contants.MEDIA_BASE;
         int direction = 0;
         animatonCollectStatus = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_collectstatus);
         Intent intent = new Intent("com.gst.fmradio.service.FMService");
@@ -127,27 +127,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.imageButton:
                 //按钮设置点击监听事件：前一个有效的FM
-                op = Contans.MEDIA_ORIGINAL;
-                mPlayView.arrowScroll(Contans.TURNLEFT);
+                op = Contants.MEDIA_ORIGINAL;
+                mPlayView.arrowScroll(Contants.TURNLEFT);
                 break;
             case R.id.imageButton2:
                 //按钮设置点击监听事件：FM减少0.1MHz
-                op = Contans.MEDIA_PREVIOUS;
+                op = Contants.MEDIA_PREVIOUS;
                 progress.clearAnimation();
 
 
                 break;
             case R.id.imageButton3:
                 //按钮设置点击监听事件：FM增加0.1MHz
-                op = Contans.MEDIA_NEXT;
+                op = Contants.MEDIA_NEXT;
                 direction = 1;
-   
+
                 break;
             case R.id.imageButton4:
                 //按钮设置点击监听事件：后一个有效的FM
-                op = Contans.MEDIA_LATTER;
+                op = Contants.MEDIA_LATTER;
                 direction = 1;
-                mPlayView.arrowScroll(Contans.TURNRIGHT);
+                mPlayView.arrowScroll(Contants.TURNRIGHT);
 
                 break;
             case R.id.collect:
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent("com.gst.fmradio.service.FMService");
         intent.setClass(this, FMService.class);
         Bundle bundle = new Bundle();
-        bundle.putInt("op", Contans.MEDIA_PREVIOUS);
+        bundle.putInt("op", Contants.MEDIA_PREVIOUS);
         intent.putExtras(bundle);
         startService(intent);
         list = queryValue();
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         backgroundcurrent = sp.getInt("backgroundcurrent", backgroundcurrent);
         setAnimatNeedle();
         setBackground(backgroundcurrent % 5);
-    
+
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mPlayView.setAdapter(mAdapter);
         mPlayView.setOnPageChangeListener(new MyPageChangeListener());
@@ -675,13 +675,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onPageSelected(int position) {
-            int op = Contans.MEDIA_BASE;
+            int op = Contants.MEDIA_BASE;
             if (position > backgroundcurrent) {
                 setLater();
-                op = Contans.MEDIA_LATTER;
+                op = Contants.MEDIA_LATTER;
             } else if (position < backgroundcurrent) {
                 setOriginal();
-                op = Contans.MEDIA_ORIGINAL;
+                op = Contants.MEDIA_ORIGINAL;
             }
             backgroundcurrent = position;
             SharedPreferences.Editor editor = sp.edit();

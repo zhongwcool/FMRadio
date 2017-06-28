@@ -8,16 +8,15 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.gst.fmradio.R;
-
-import com.gst.fmradio.bean.Contans;
+import com.gst.fmradio.bean.Contants;
 
 /**
  * Created by yyshang on 7/8/15.
  */
 public class FMService extends Service {
-    private MediaPlayer mp;
     int[] music = {R.raw.play1, R.raw.play2, R.raw.play3, R.raw.play4, R.raw.play5, R.raw.play6};
     int current = 0;
+    private MediaPlayer mp;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -46,7 +45,7 @@ public class FMService extends Service {
             if (bundle != null) {
                 int op = bundle.getInt("op");
                 switch (op) {
-                    case Contans.MEDIA_ORIGINAL:
+                    case Contants.MEDIA_ORIGINAL:
                         if (current > 5) {
                             current = 0;
                         } else if (current < 0) {
@@ -56,7 +55,7 @@ public class FMService extends Service {
                         play();
                         current--;
                         break;
-                    case Contans.MEDIA_PREVIOUS:
+                    case Contants.MEDIA_PREVIOUS:
                         if (current > 5) {
                             current = 0;
                         } else if (current < 0) {
@@ -65,7 +64,7 @@ public class FMService extends Service {
                         play();
                         current--;
                         break;
-                    case Contans.MEDIA_NEXT:
+                    case Contants.MEDIA_NEXT:
                         if (current > 5) {
                             current = 0;
                         } else if (current < 0) {
@@ -74,7 +73,7 @@ public class FMService extends Service {
                         play();
                         current++;
                         break;
-                    case Contans.MEDIA_LATTER:
+                    case Contants.MEDIA_LATTER:
                         if (current > 5) {
                             current = 0;
                         } else if (current < 0) {
